@@ -8,11 +8,12 @@ app.use(bodyParser.json());
 app.use(cors());
 const allRoutes = require("./routes");
 const fs = require("fs");
-// const mongoConnect = require("./util/database");
 const mongoose = require("mongoose");
 const secret=String(require('crypto').randomBytes(64).toString('hex'))
 
-fs.writeFileSync('.env',`TOKEN_SECRET=${secret}`)
+// const mongoConnect = require("./util/database");
+
+// fs.writeFileSync('.env',`TOKEN_SECRET=${secret}`)
 
 app.use("/shopify", allRoutes);
 

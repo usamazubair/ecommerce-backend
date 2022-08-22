@@ -27,23 +27,24 @@ exports.signUp = async (req, res, next) => {
 
 exports.signIn = async (req, res, next) => {
   const { email, password } = req.body;
-  const token = generatorAccessToken(email);
 
   try {
     var result = await User.findOne({ Email: email });
+
     bcrypt.compare(password, result.Password).then((value) => {
+      
       if (value) {
-        res
-          .status(200)
-          .json({
-            role: result.Role,
-            token: token,
-            message: "Sign In Successfully",
-          });
+        const token = generatorAccessToken(email, result._id);
+        res.status(200).json({
+          user: result,
+          token: token,
+          message: "Sign In Successfully",
+        });
         return;
       }
       res.status(403).json({ message: "Password is incorrect" });
     });
+
   } catch (e) {
     res.status(404).json({ message: "User not found" });
   }
