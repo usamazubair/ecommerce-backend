@@ -9,11 +9,17 @@ app.use(cors());
 const allRoutes = require("./routes");
 const fs = require("fs");
 const mongoose = require("mongoose");
-const secret=String(require('crypto').randomBytes(64).toString('hex'))
+const secret = String(require("crypto").randomBytes(64).toString("hex"));
+const fileUpload = require("express-fileupload");
+const basePath = __dirname;
 
 // const mongoConnect = require("./util/database");
 
 // fs.writeFileSync('.env',`TOKEN_SECRET=${secret}`)
+
+app.use(fileUpload());
+
+app.use("/", express.static("public"));
 
 app.use("/shopify", allRoutes);
 
@@ -32,3 +38,5 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+exports.basePath = basePath;

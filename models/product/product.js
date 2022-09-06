@@ -26,6 +26,12 @@ const productSchema = new Schema({
     ref: "User",
     required: true,
   },
+  [product_mapper.categoryId]: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+  [product_mapper.imagePath]: { type: String, required: true },
   [product_mapper.userEmail]: { type: String, required: true },
 });
 

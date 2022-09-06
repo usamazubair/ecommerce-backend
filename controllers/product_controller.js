@@ -3,7 +3,7 @@ const product_mapper = require("../models/product/product_mapper");
 
 exports.getProducts = async (req, res, next) => {
   try {
-    var result = await Product.find();
+    var result = await Product.find().populate({path: "CategoryId", select: 'Name'});
     res.status(200).json({ data: result });
   } catch (e) {
     console.log(e);
@@ -11,7 +11,7 @@ exports.getProducts = async (req, res, next) => {
 };
 
 exports.addProduct = async (req, res, next) => {
-  const { name, quantity, price, color, brand } = req.body;
+  const { name, quantity, price, color, brand, category, imagePath } = req.body;
   const { email, id } = req.result;
 
   const product = new Product({
@@ -22,12 +22,18 @@ exports.addProduct = async (req, res, next) => {
     [product_mapper.brand]: brand,
     [product_mapper.userId]: id,
     [product_mapper.userEmail]: email,
+    [product_mapper.categoryId]: category,
+    [product_mapper.imagePath]: imagePath,
   });
 
   product
     .save()
     .then((result) => {
-      res.status(200).json({ response: result, message: "Product Added" });
+      result.populate("CategoryId").then((secondResult) => {
+        res
+          .status(200)
+          .json({ response: secondResult, message: "Product Added" });
+      });
     })
     .catch((err) => {
       res.status(400).json({ message: "Product Failed to add" });
@@ -45,7 +51,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.updateProduct = async (req, res, next) => {
   try {
-    var response = await Product.findByIdAndUpdate(req.body.id, {
+    await Product.findByIdAndUpdate(req.body.id, {
       ...req.body.updateData,
     });
 

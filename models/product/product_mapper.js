@@ -5,5 +5,7 @@ module.exports = {
   color: "Color",
   brand: "Brand",
   userId: "UserId",
-  userEmail: "UserEmail"
+  categoryId: "CategoryId",
+  userEmail: "UserEmail",
+  imagePath: "ImagePath",
 };
