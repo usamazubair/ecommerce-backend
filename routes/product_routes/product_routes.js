@@ -6,4 +6,9 @@ module.exports = (router) => {
   router.post("/products", verifyToken, productController.addProduct);
   router.delete("/products", verifyToken, productController.deleteProduct);
   router.put("/products", verifyToken, productController.updateProduct);
+  router.get(
+    "/category/:categoryId/products",
+    verifyToken,
+    productController.getProductsByCategory
+  );
 };

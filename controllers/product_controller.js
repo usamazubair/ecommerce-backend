@@ -3,7 +3,10 @@ const product_mapper = require("../models/product/product_mapper");
 
 exports.getProducts = async (req, res, next) => {
   try {
-    var result = await Product.find().populate({path: "CategoryId", select: 'Name'});
+    var result = await Product.find().populate({
+      path: "CategoryId",
+      select: "Name",
+    });
     res.status(200).json({ data: result });
   } catch (e) {
     console.log(e);
@@ -59,5 +62,19 @@ exports.updateProduct = async (req, res, next) => {
   } catch (e) {
     console.log(e);
     res.status(404).json({ message: "Not Updated" });
+  }
+};
+
+exports.getProductsByCategory = async (req, res, next) => {
+  var sortOption = req.query.sort === "1" ? "Price" : "Name";
+  const { categoryId } = req.params;
+
+  try {
+    var result = await Product.find({ CategoryId: categoryId }).sort(
+      sortOption
+    );
+    res.status(200).json({ response: result, message: "Success" });
+  } catch (e) {
+    res.status(404).json({ message: "Cannot Find" });
   }
 };
