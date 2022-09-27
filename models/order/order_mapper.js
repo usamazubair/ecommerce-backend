@@ -3,4 +3,5 @@ module.exports = {
   cartId: "CartId",
   shippingDetail: "ShippingDetail",
   paymentOption: "PaymentOption",
+  proceed: "Proceed",
 };

@@ -21,6 +21,10 @@ const orderSchema = new Schema({
     type: Object,
     required: true,
   },
+  [order_mapper.proceed]: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Order", orderSchema);

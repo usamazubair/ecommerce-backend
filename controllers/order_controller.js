@@ -28,12 +28,23 @@ exports.addOrder = async (req, res, next) => {
 
 exports.getOrder = async (req, res, next) => {
   try {
-    var result = await Order.find().populate({
-      path: "CartId",
+    var result = await Order.find()
+      .populate({ path: "CartId", populate: [{ path: "Products.ProductId" }] })
+      .exec();
+
+    res.status(200).json({ data: result });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+exports.updateOrder = async (req, res, next) => {
+  try {
+    await Order.findByIdAndUpdate(req.body.id, {
+      Proceed: req.body.Proceed,
     });
 
-    console.log(result);
-    res.status(200).json({ data: result });
+    res.status(200).json({ message: "Data updated successfully" });
   } catch (e) {
     console.log(e);
   }

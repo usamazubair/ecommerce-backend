@@ -1,4 +1,3 @@
-const cart = require("../models/cart/cart");
 const Cart = require("../models/cart/cart");
 const cart_mapper = require("../models/cart/cart_mapper");
 
