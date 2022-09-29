@@ -3,6 +3,7 @@ const user_mapper = require("../models/user/user_mapper");
 var bcrypt = require("bcryptjs");
 const generatorAccessToken = require("../util/token_generate/access_token");
 const nodemailer = require("nodemailer");
+const { Api401Error, Api404Error } = require("../util/Error/AllErrors/AllErrors");
 const transporter = nodemailer.createTransport({
   host: "smtp.ethereal.email",
   port: 587,
@@ -47,19 +48,29 @@ exports.signIn = async (req, res, next) => {
   try {
     var result = await User.findOne({ Email: email });
 
-    bcrypt.compare(password, result.Password).then((value) => {
-      if (value) {
-        const token = generatorAccessToken(email, result._id);
-        res.status(200).json({
-          user: result,
-          token: token,
-          message: "Sign In Successfully",
-        });
-        return;
-      }
-      res.status(403).json({ message: "Password is incorrect" });
-    });
+    if(!result){
+      throw new Api404Error("User not found.");
+    }
+
+    bcrypt
+      .compare(password, result.Password)
+      .then((value) => {
+        if (value) {
+          const token = generatorAccessToken(email, result._id);
+          res.status(200).json({
+            user: result,
+            token: token,
+            message: "Sign In Successfully",
+          });
+          return;
+        }
+        throw new Api401Error("The provided credentials are incorrect.");
+      })
+      .catch((e) => {
+        next(e);
+      });
   } catch (e) {
-    res.status(404).json({ message: "User not found" });
+    console.log(e);
+    next(e);
   }
 };

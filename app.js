@@ -12,6 +12,7 @@ const mongoose = require("mongoose");
 const secret = String(require("crypto").randomBytes(64).toString("hex"));
 const fileUpload = require("express-fileupload");
 const basePath = __dirname;
+const { logError, returnError, isOperationalError } = require("./util/Error");
 
 // const mongoConnect = require("./util/database");
 
@@ -25,6 +26,21 @@ app.use("/shopify", allRoutes);
 
 app.use((req, res, next) => {
   res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
+});
+
+app.use(logError);
+app.use(returnError);
+
+process.on("unhandledRejection", (error) => {
+  throw error;
+});
+
+process.on("uncaughtException", (error) => {
+  logError(error);
+
+  if (!isOperationalError(error)) {
+    process.exit(1);
+  }
 });
 
 mongoose

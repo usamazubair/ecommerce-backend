@@ -1,5 +1,6 @@
 const Product = require("../models/product/product");
 const product_mapper = require("../models/product/product_mapper");
+const { Api401Error } = require("../util/Error/AllErrors/AllErrors");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -7,6 +8,9 @@ exports.getProducts = async (req, res, next) => {
       path: "CategoryId",
       select: "Name",
     });
+    if(result.length === 0 ) {
+      throw new Api401Error('not found product');
+    }
     res.status(200).json({ data: result });
   } catch (e) {
     console.log(e);
