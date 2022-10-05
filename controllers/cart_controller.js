@@ -5,9 +5,10 @@ exports.addCart = async (req, res, next) => {
   const { productId, Quantity } = req.body;
   const { id } = req.result;
 
+  console.log(productId);
   try {
     const result = await Cart.findOneAndUpdate(
-      { [cart_mapper.userId]: { $eq: id } },
+      { [cart_mapper.userId]: id , [cart_mapper.complete]: false },
       {
         $push: {
           Products: [
